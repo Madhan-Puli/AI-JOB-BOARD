@@ -1,59 +1,43 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import JobCard from "../../components/JobCard";
-
-type Job = {
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  salary: string;
-};
 
 export default function JobsPage() {
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    async function fetchJobs() {
-      try {
-        const res = await fetch("/api/jobs");
-        const data = await res.json();
-        setJobs(data);
-      } catch (error) {
-        console.error("Failed to fetch jobs:", error);
-      }
-    }
-
-    fetchJobs();
+    fetch("/api/jobs")
+      .then((res) => res.json())
+      .then((data) => {
+        // ✅ SAFE CHECK
+        if (Array.isArray(data)) {
+          setJobs(data);
+        } else {
+          setJobs([]);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setJobs([]);
+      });
   }, []);
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-blue-600 mb-8 text-center">
-          All Jobs
-        </h1>
+    <div>
+      <h1>Jobs</h1>
 
-        {jobs.length === 0 ? (
-          <p className="text-center text-gray-600">
-            No jobs available.
-          </p>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {jobs.map((job) => (
-              <JobCard
-                key={job.id}
-                id={job.id}
-                title={job.title}
-                company={job.company}
-                location={job.location}
-                salary={job.salary}
-              />
-            ))}
+      {jobs.length === 0 ? (
+        <p>No jobs found</p>
+      ) : (
+        jobs.map((job, index) => (
+          <div key={index} style={{ border: "1px solid gray", margin: 10, padding: 10 }}>
+            <h2>{job.title}</h2>
+            <p>{job.company}</p>
+            <p>{job.location}</p>
+            <p>{job.salary}</p>
           </div>
-        )}
-      </div>
-    </main>
+        ))
+      )}
+    </div>
   );
 }
