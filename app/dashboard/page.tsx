@@ -1,6 +1,10 @@
+"use client";
+
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   FiArrowRight,
   FiBarChart2,
@@ -8,38 +12,110 @@ import {
   FiCheckCircle,
   FiClock,
   FiFileText,
+  FiLogOut,
   FiUserCheck,
   FiUsers,
 } from "react-icons/fi";
 
-export default async function DashboardPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ role?: string }>;
-}) {
-  const { role } = await searchParams;
-  const isRecruiter = role === "recruiter";
+type Session = {
+  role: "candidate" | "recruiter";
+  username: string;
+  loggedInAt: string;
+};
+
+export default function DashboardPage() {
+  const router = useRouter();
+  const [session] = useState<Session | null>(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
+    const rawSession = window.localStorage.getItem("talentbridge-session");
+
+    if (!rawSession) {
+      return null;
+    }
+
+    try {
+      const parsed = JSON.parse(rawSession) as Session;
+
+      return parsed.role === "candidate" || parsed.role === "recruiter"
+        ? parsed
+        : null;
+    } catch {
+      window.localStorage.removeItem("talentbridge-session");
+      return null;
+    }
+  });
+
+  function logout() {
+    window.localStorage.removeItem("talentbridge-session");
+    router.push("/login");
+  }
+
+  if (!session) {
+    return (
+      <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_36%),linear-gradient(135deg,#f8fafc,#eef2ff)]">
+        <Navbar />
+        <section className="mx-auto max-w-2xl px-5 py-20 text-center">
+          <div className="rounded-lg border border-white/70 bg-white p-8 shadow-xl">
+            <h1 className="text-3xl font-bold text-slate-950">
+              Login required
+            </h1>
+            <p className="mt-3 leading-7 text-slate-600">
+              Please login with valid candidate or recruiter credentials to view
+              the correct dashboard.
+            </p>
+            <Link
+              href="/login"
+              className="mt-6 inline-flex items-center gap-2 rounded-md bg-blue-600 px-5 py-3 font-bold text-white hover:bg-blue-700"
+            >
+              Go to login
+              <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+        <Footer />
+      </main>
+    );
+  }
+
+  const isRecruiter = session.role === "recruiter";
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_36%),linear-gradient(135deg,#f8fafc_0%,#eef2ff_55%,#ecfdf5_100%)]">
       <Navbar />
 
-      <section className="border-b border-slate-200 bg-white">
+      <section className="border-b border-white/70 bg-white/80 backdrop-blur">
         <div className="mx-auto max-w-7xl px-5 py-10">
-          <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
-            {isRecruiter ? "Recruiter workspace" : "Candidate workspace"}
-          </p>
-          <div className="mt-3 grid gap-6 lg:grid-cols-[1fr_320px] lg:items-end">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="rounded-md bg-blue-50 px-3 py-1 text-sm font-bold uppercase tracking-wide text-blue-700">
+              Signed in as {session.username}
+            </p>
+            <button
+              type="button"
+              onClick={logout}
+              className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-100"
+            >
+              <FiLogOut aria-hidden="true" className="h-4 w-4" />
+              Logout
+            </button>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-end">
             <div>
-              <h1 className="text-4xl font-bold text-slate-950">
+              <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+                {isRecruiter ? "Recruiter workspace" : "Candidate workspace"}
+              </p>
+              <h1 className="mt-3 text-4xl font-bold text-slate-950">
                 {isRecruiter
                   ? "Manage hiring from posting to shortlist."
                   : "Track your career search from discovery to offer."}
               </h1>
               <p className="mt-4 max-w-3xl leading-7 text-slate-600">
                 {isRecruiter
-                  ? "This demo dashboard shows how recruiters can manage openings, review applicants, and move candidates through a hiring pipeline."
-                  : "This demo dashboard shows how students, freshers, and professionals can manage applications, improve profile readiness, and keep job search momentum visible."}
+                  ? "Recruiters can manage openings, review applicants, and move candidates through a hiring pipeline."
+                  : "Students, freshers, and professionals can manage applications, improve profile readiness, and keep job search momentum visible."}
               </p>
             </div>
 
@@ -62,7 +138,7 @@ export default async function DashboardPage({
             return (
               <div
                 key={metric.label}
-                className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+                className="rounded-lg border border-white/70 bg-white p-5 shadow-sm"
               >
                 <span className="grid h-10 w-10 place-items-center rounded-md bg-blue-50 text-blue-700">
                   <Icon aria-hidden="true" className="h-5 w-5" />
@@ -79,7 +155,7 @@ export default async function DashboardPage({
         </div>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_380px]">
-          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-lg border border-white/70 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-bold text-slate-950">
               {isRecruiter ? "Hiring pipeline" : "Application tracker"}
             </h2>
@@ -105,9 +181,9 @@ export default async function DashboardPage({
             </div>
           </div>
 
-          <aside className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+          <aside className="rounded-lg border border-white/70 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-bold text-slate-950">
-              Product thinking
+              Role permissions
             </h2>
             <div className="mt-5 space-y-4">
               {(isRecruiter ? recruiterThinking : candidateThinking).map(
@@ -185,13 +261,13 @@ const recruiterPipeline = [
 ];
 
 const candidateThinking = [
-  "A candidate dashboard helps students and employees understand their next action.",
-  "Application status creates trust and makes the platform feel useful after applying.",
-  "Profile readiness suggests future AI recommendations without overbuilding the demo.",
+  "Candidate users can browse jobs, apply, and track their own applications.",
+  "Recruiter-only actions are intentionally separated from the candidate workspace.",
+  "Invalid users are redirected to login before seeing dashboard content.",
 ];
 
 const recruiterThinking = [
-  "Recruiters need visibility into the hiring funnel, not only a post-job form.",
-  "Pipeline stages make the platform useful for real hiring operations.",
-  "This role split shows a path toward authentication, permissions, and analytics.",
+  "Recruiter users can post jobs and view hiring pipeline information.",
+  "Candidate-only tracking is separated from recruiter hiring operations.",
+  "Invalid users are redirected to login before seeing dashboard content.",
 ];

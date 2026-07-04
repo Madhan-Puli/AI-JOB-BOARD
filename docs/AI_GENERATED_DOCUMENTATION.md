@@ -71,7 +71,16 @@ The current implementation logs candidate data and shows a confirmation screen. 
 
 ### 6. Demo Login
 
-The login page is a role-based demo entry point. Instead of forcing reviewers through real authentication, it lets them immediately inspect:
+The login page is a role-based demo entry point. It accepts only fixed demo credentials:
+
+| Role | Username | Password |
+| --- | --- | --- |
+| Candidate / Student | `Student` | `Student` |
+| Recruiter | `Admin` | `Admin` |
+
+Invalid usernames and passwords are rejected. After valid login, the user is routed into the dashboard experience for their role.
+
+Instead of forcing reviewers through external authentication setup, this lets them immediately inspect:
 
 - Candidate demo experience.
 - Recruiter demo experience.

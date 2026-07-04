@@ -144,10 +144,10 @@ export default function Home() {
               link, and track their job search from a focused dashboard.
             </p>
             <Link
-              href="/dashboard?role=candidate"
+              href="/login"
               className="mt-6 inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-3 font-bold text-white hover:bg-blue-700"
             >
-              View candidate dashboard
+              Login as candidate
               <FiArrowRight aria-hidden="true" className="h-4 w-4" />
             </Link>
           </div>
@@ -165,10 +165,10 @@ export default function Home() {
               real recruitment operations beyond simple job posting.
             </p>
             <Link
-              href="/dashboard?role=recruiter"
+              href="/login"
               className="mt-6 inline-flex items-center gap-2 rounded-md bg-slate-950 px-4 py-3 font-bold text-white hover:bg-slate-800"
             >
-              View recruiter dashboard
+              Login as recruiter
               <FiArrowRight aria-hidden="true" className="h-4 w-4" />
             </Link>
           </div>

@@ -50,7 +50,7 @@ export default function Navbar() {
             className="hidden items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-950 sm:inline-flex"
           >
             <FiUserCheck aria-hidden="true" className="h-4 w-4" />
-            Demo login
+            Login
           </Link>
         </div>
       </div>

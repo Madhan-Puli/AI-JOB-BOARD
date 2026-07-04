@@ -68,6 +68,18 @@ http://localhost:3000
 - `/dashboard?role=candidate` - candidate workspace
 - `/dashboard?role=recruiter` - recruiter workspace
 
+## Demo Credentials
+
+Only these demo users can access the role-based dashboard:
+
+| Role | Username | Password |
+| --- | --- | --- |
+| Candidate / Student | `Student` | `Student` |
+| Recruiter | `Admin` | `Admin` |
+
+Invalid usernames and passwords are rejected on the login screen. After valid
+login, the user is routed to the dashboard for their role.
+
 ## CI/CD Setup
 
 The workflow at `.github/workflows/ci.yml` runs on pushes and pull requests to `main` and `madhan`.

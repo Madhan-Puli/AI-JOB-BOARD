@@ -1,87 +1,169 @@
+"use client";
+
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import Link from "next/link";
-import { FiArrowRight, FiBriefcase, FiUser } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import {
+  FiArrowRight,
+  FiBriefcase,
+  FiLock,
+  FiShield,
+  FiUser,
+} from "react-icons/fi";
 
-const roles = [
-  {
-    title: "Candidate demo",
-    href: "/dashboard?role=candidate",
+type Role = "candidate" | "recruiter";
+
+const credentials = {
+  candidate: {
+    username: "Student",
+    password: "Student",
+    title: "Candidate / Student Login",
+    description:
+      "For students, freshers, and professionals who want to discover roles, apply, and track applications.",
     icon: FiUser,
-    description:
-      "For students, freshers, and professionals who want to discover roles, apply, and track progress.",
-    features: ["Profile readiness", "Applied jobs", "Saved roles"],
+    accent: "from-sky-500 to-blue-700",
   },
-  {
-    title: "Recruiter demo",
-    href: "/dashboard?role=recruiter",
+  recruiter: {
+    username: "Admin",
+    password: "Admin",
+    title: "Recruiter Login",
+    description:
+      "For recruiters and employers who want to post jobs, review candidates, and manage hiring pipelines.",
     icon: FiBriefcase,
-    description:
-      "For hiring teams that need to publish openings, review applicants, and manage a hiring pipeline.",
-    features: ["Posted jobs", "Applicant review", "Interview pipeline"],
+    accent: "from-slate-900 to-blue-900",
   },
-];
+};
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_34%),linear-gradient(135deg,#f8fafc_0%,#eef2ff_48%,#f0fdf4_100%)]">
       <Navbar />
 
       <section className="mx-auto max-w-7xl px-5 py-12">
-        <div className="max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
-            Demo access
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="inline-flex items-center gap-2 rounded-md border border-blue-100 bg-white/80 px-3 py-1 text-sm font-bold uppercase tracking-wide text-blue-700 shadow-sm">
+            <FiShield aria-hidden="true" className="h-4 w-4" />
+            Role based access
           </p>
-          <h1 className="mt-3 text-4xl font-bold text-slate-950">
-            Choose how you want to explore TalentBridge AI.
+          <h1 className="mt-5 text-4xl font-bold text-slate-950 sm:text-5xl">
+            Login as a recruiter or candidate.
           </h1>
           <p className="mt-4 leading-7 text-slate-600">
-            This assessment build uses role-based demo entry instead of a full
-            authentication provider. It still demonstrates how the product would
-            separate candidate and recruiter experiences in a production system.
+            The platform now separates both sides of the marketplace. Only valid
+            demo credentials are accepted, and each role lands on its own
+            dashboard experience.
           </p>
         </div>
 
-        <div className="mt-8 grid gap-5 lg:grid-cols-2">
-          {roles.map((role) => {
-            const Icon = role.icon;
-
-            return (
-              <Link
-                key={role.title}
-                href={role.href}
-                className="group rounded-lg border border-slate-200 bg-white p-6 shadow-sm hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md"
-              >
-                <span className="grid h-12 w-12 place-items-center rounded-lg bg-blue-50 text-blue-700">
-                  <Icon aria-hidden="true" className="h-6 w-6" />
-                </span>
-                <h2 className="mt-5 text-2xl font-bold text-slate-950">
-                  {role.title}
-                </h2>
-                <p className="mt-3 leading-7 text-slate-600">
-                  {role.description}
-                </p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {role.features.map((feature) => (
-                    <span
-                      key={feature}
-                      className="rounded-md bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700"
-                    >
-                      {feature}
-                    </span>
-                  ))}
-                </div>
-                <span className="mt-6 inline-flex items-center gap-2 font-bold text-blue-700 group-hover:text-blue-800">
-                  Continue as {role.title.replace(" demo", "")}
-                  <FiArrowRight aria-hidden="true" className="h-4 w-4" />
-                </span>
-              </Link>
-            );
-          })}
+        <div className="mt-10 grid gap-6 lg:grid-cols-2">
+          <LoginCard role="candidate" />
+          <LoginCard role="recruiter" />
         </div>
       </section>
 
       <Footer />
     </main>
+  );
+}
+
+function LoginCard({ role }: { role: Role }) {
+  const router = useRouter();
+  const config = credentials[role];
+  const Icon = config.icon;
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+
+    const isValid =
+      username.trim() === config.username && password.trim() === config.password;
+
+    if (!isValid) {
+      setError(
+        `Invalid ${role} credentials. Use ${config.username} / ${config.password}.`
+      );
+      return;
+    }
+
+    localStorage.setItem(
+      "talentbridge-session",
+      JSON.stringify({
+        role,
+        username: config.username,
+        loggedInAt: new Date().toISOString(),
+      })
+    );
+
+    router.push("/dashboard");
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="overflow-hidden rounded-lg border border-white/70 bg-white shadow-xl shadow-slate-200/70"
+    >
+      <div className={`bg-gradient-to-br ${config.accent} p-6 text-white`}>
+        <span className="grid h-12 w-12 place-items-center rounded-lg bg-white/15">
+          <Icon aria-hidden="true" className="h-6 w-6" />
+        </span>
+        <h2 className="mt-5 text-2xl font-bold">{config.title}</h2>
+        <p className="mt-3 leading-7 text-white/80">{config.description}</p>
+      </div>
+
+      <div className="p-6">
+        <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+          Demo credentials:{" "}
+          <span className="font-bold text-slate-950">{config.username}</span> /{" "}
+          <span className="font-bold text-slate-950">{config.password}</span>
+        </div>
+
+        <label className="mt-5 block">
+          <span className="text-sm font-bold text-slate-700">Username</span>
+          <input
+            value={username}
+            onChange={(event) => {
+              setUsername(event.target.value);
+              setError("");
+            }}
+            placeholder={config.username}
+            className="mt-2 w-full rounded-md border border-slate-300 bg-white p-3 text-slate-950 placeholder:text-slate-400"
+          />
+        </label>
+
+        <label className="mt-4 block">
+          <span className="text-sm font-bold text-slate-700">Password</span>
+          <div className="mt-2 flex items-center gap-3 rounded-md border border-slate-300 bg-white px-3">
+            <FiLock aria-hidden="true" className="h-4 w-4 text-slate-400" />
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setError("");
+              }}
+              placeholder={config.password}
+              className="w-full border-0 bg-transparent py-3 text-slate-950 placeholder:text-slate-400 focus:shadow-none"
+            />
+          </div>
+        </label>
+
+        {error ? (
+          <p className="mt-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700">
+            {error}
+          </p>
+        ) : null}
+
+        <button
+          type="submit"
+          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-blue-600 px-5 py-3 font-bold text-white hover:bg-blue-700"
+        >
+          Login as {role === "candidate" ? "Candidate" : "Recruiter"}
+          <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+        </button>
+      </div>
+    </form>
   );
 }
