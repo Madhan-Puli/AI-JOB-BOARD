@@ -6,6 +6,32 @@ import Hero from "../components/Hero";
 import FeaturedJobs from "../components/FeaturedJobs";
 import JobCard from "../components/JobCard";
 import Footer from "../components/Footer";
+import Link from "next/link";
+import {
+  FiArrowRight,
+  FiBriefcase,
+  FiCheckCircle,
+  FiClipboard,
+  FiUsers,
+} from "react-icons/fi";
+
+const marketplaceFeatures = [
+  {
+    icon: FiCheckCircle,
+    title: "Candidate profile flow",
+    copy: "A clean application journey with resume URL, contact details, and confirmation state.",
+  },
+  {
+    icon: FiClipboard,
+    title: "Recruiter pipeline",
+    copy: "A dashboard concept for posted jobs, candidate review, interviews, and offers.",
+  },
+  {
+    icon: FiBriefcase,
+    title: "Production mindset",
+    copy: "MongoDB data, validation, CI/CD, documentation, and Vercel deployment readiness.",
+  },
+];
 
 type Job = {
   _id: string;
@@ -103,18 +129,67 @@ export default function Home() {
         )}
       </section>
 
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-7xl gap-6 px-5 py-12 lg:grid-cols-2">
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-6">
+            <span className="grid h-11 w-11 place-items-center rounded-lg bg-blue-600 text-white">
+              <FiUsers aria-hidden="true" className="h-5 w-5" />
+            </span>
+            <h2 className="mt-5 text-2xl font-bold text-slate-950">
+              For candidates and students
+            </h2>
+            <p className="mt-3 leading-7 text-slate-600">
+              Students, freshers, and early-career professionals can discover
+              relevant openings, review role expectations, apply with a resume
+              link, and track their job search from a focused dashboard.
+            </p>
+            <Link
+              href="/dashboard?role=candidate"
+              className="mt-6 inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-3 font-bold text-white hover:bg-blue-700"
+            >
+              View candidate dashboard
+              <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-6">
+            <span className="grid h-11 w-11 place-items-center rounded-lg bg-slate-950 text-white">
+              <FiBriefcase aria-hidden="true" className="h-5 w-5" />
+            </span>
+            <h2 className="mt-5 text-2xl font-bold text-slate-950">
+              For recruiters and employers
+            </h2>
+            <p className="mt-3 leading-7 text-slate-600">
+              Recruiters can publish roles, monitor applicant stages, and see a
+              hiring pipeline view that explains how the platform can support
+              real recruitment operations beyond simple job posting.
+            </p>
+            <Link
+              href="/dashboard?role=recruiter"
+              className="mt-6 inline-flex items-center gap-2 rounded-md bg-slate-950 px-4 py-3 font-bold text-white hover:bg-slate-800"
+            >
+              View recruiter dashboard
+              <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-7xl px-5 pb-12">
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            ["Fast discovery", "Search and scan jobs without noisy page reloads."],
-            ["Employer workflow", "Post new roles through a validated recruiter form."],
-            ["CI/CD ready", "GitHub Actions verifies builds and can deploy to Vercel."],
-          ].map(([title, copy]) => (
-            <div key={title} className="rounded-lg border border-slate-200 bg-white p-5">
-              <h3 className="font-bold text-slate-950">{title}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{copy}</p>
+        <div className="grid gap-4 py-12 md:grid-cols-3">
+          {marketplaceFeatures.map((feature) => {
+            const Icon = feature.icon;
+
+            return (
+            <div key={feature.title} className="rounded-lg border border-slate-200 bg-white p-5">
+              <span className="grid h-10 w-10 place-items-center rounded-md bg-blue-50 text-blue-700">
+                <Icon aria-hidden="true" className="h-5 w-5" />
+              </span>
+              <h3 className="font-bold text-slate-950">{feature.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{feature.copy}</p>
             </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 

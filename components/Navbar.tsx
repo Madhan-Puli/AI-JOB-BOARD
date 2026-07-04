@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FiBriefcase, FiPlusCircle } from "react-icons/fi";
+import { FiBriefcase, FiPlusCircle, FiUserCheck } from "react-icons/fi";
 
 export default function Navbar() {
   return (
@@ -33,11 +33,24 @@ export default function Navbar() {
             Jobs
           </Link>
           <Link
+            href="/dashboard"
+            className="hidden rounded-md px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-950 md:inline-flex"
+          >
+            Dashboard
+          </Link>
+          <Link
             href="/post-job"
             className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
           >
             <FiPlusCircle aria-hidden="true" className="h-4 w-4" />
             <span className="hidden sm:inline">Post Job</span>
+          </Link>
+          <Link
+            href="/login"
+            className="hidden items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-950 sm:inline-flex"
+          >
+            <FiUserCheck aria-hidden="true" className="h-4 w-4" />
+            Demo login
           </Link>
         </div>
       </div>

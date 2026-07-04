@@ -1,6 +1,6 @@
 # TalentBridge AI - Professional Job Board
 
-TalentBridge AI is a modern job board built with Next.js, MongoDB, GitHub Actions, and Vercel. It was created as an AI-assisted software engineering assessment project with a focus on production-minded UX, clean feature flows, and deployment readiness.
+TalentBridge AI is a modern two-sided hiring marketplace built with Next.js, MongoDB, GitHub Actions, and Vercel. It was created as an AI-assisted software engineering assessment project with a focus on production-minded UX, candidate/recruiter journeys, clean feature flows, and deployment readiness.
 
 ## Live Links
 
@@ -11,6 +11,10 @@ TalentBridge AI is a modern job board built with Next.js, MongoDB, GitHub Action
 ## Key Features
 
 - Professional homepage with search, marketplace metrics, and featured role cards.
+- Two-sided marketplace positioning for candidates/students and recruiters.
+- Demo login route with candidate and recruiter entry points.
+- Candidate dashboard concept for profile readiness, saved jobs, applications, and interviews.
+- Recruiter dashboard concept for open roles, applicants, shortlists, and hiring pipeline stages.
 - Jobs directory with keyword search and location filtering.
 - MongoDB-backed job data using Next.js App Router API routes.
 - Server-rendered job detail pages for stable role links.
@@ -53,6 +57,17 @@ npm run dev
 http://localhost:3000
 ```
 
+## Demo Routes
+
+- `/` - marketplace homepage
+- `/jobs` - searchable job directory
+- `/jobs/:id` - job detail page
+- `/post-job` - recruiter job publishing flow
+- `/apply?id=<jobId>` - candidate application flow
+- `/login` - role-based demo access
+- `/dashboard?role=candidate` - candidate workspace
+- `/dashboard?role=recruiter` - recruiter workspace
+
 ## CI/CD Setup
 
 The workflow at `.github/workflows/ci.yml` runs on pushes and pull requests to `main` and `madhan`.
@@ -75,6 +90,8 @@ Pipeline stages:
 ## Assessment Checklist
 
 - [x] Build a job board using AI-assisted development.
+- [x] Add candidate and recruiter UX flows.
+- [x] Add demo login and role-based dashboards.
 - [x] Push code to GitHub.
 - [x] Add GitHub Actions CI/CD pipeline.
 - [x] Prepare Vercel deployment workflow.

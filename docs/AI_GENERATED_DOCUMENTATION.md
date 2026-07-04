@@ -2,23 +2,28 @@
 
 ## Product Overview
 
-TalentBridge AI is a professional job board for software hiring. It supports job discovery, role detail review, employer job posting, and candidate application flows. The product is intentionally designed to look more mature than a simple student CRUD app: it includes structured navigation, polished empty and loading states, search/filter controls, and deployment-ready engineering practices.
+TalentBridge AI is a professional two-sided hiring marketplace for software hiring. It supports job discovery, role detail review, employer job posting, candidate application flows, demo login, and role-based dashboard concepts. The product is intentionally designed to look more mature than a simple student CRUD app: it includes structured navigation, polished empty and loading states, search/filter controls, candidate/recruiter journeys, and deployment-ready engineering practices.
 
 ## User Roles
 
 ### Candidates
 
-Candidates can browse open software roles, search across job titles and companies, filter by location, open detailed job pages, and submit an application profile with contact details and a resume URL.
+Candidates can browse open software roles, search across job titles and companies, filter by location, open detailed job pages, submit an application profile with contact details and a resume URL, and view a dashboard concept for saved jobs, applications, interviews, and profile readiness.
 
 ### Employers
 
-Employers can publish new roles using a validated posting form. New roles are saved to MongoDB and appear in the jobs marketplace.
+Recruiters can publish new roles using a validated posting form, review a demo hiring pipeline, and understand how the product can evolve into applicant review and interview management. New roles are saved to MongoDB and appear in the jobs marketplace.
 
 ## Feature Details
 
 ### 1. Homepage
 
-The homepage introduces the product with a professional hero section, search input, live role count, marketplace highlights, and featured role cards. The goal is to communicate credibility quickly while still making job search the primary action.
+The homepage introduces the product with a professional hero section, search input, live role count, marketplace highlights, and featured role cards. It also clearly explains the two-sided value proposition:
+
+- Candidates and students can discover roles, apply, and track progress.
+- Recruiters can publish openings, review candidates, and manage hiring stages.
+
+The goal is to communicate credibility quickly while still making job search the primary action.
 
 ### 2. Jobs Directory
 
@@ -64,7 +69,40 @@ The application page captures:
 
 The current implementation logs candidate data and shows a confirmation screen. This can be extended with an `applications` MongoDB collection.
 
-### 6. API Layer
+### 6. Demo Login
+
+The login page is a role-based demo entry point. Instead of forcing reviewers through real authentication, it lets them immediately inspect:
+
+- Candidate demo experience.
+- Recruiter demo experience.
+
+This demonstrates product architecture thinking while keeping the assessment easy to review.
+
+### 7. Candidate Dashboard
+
+The candidate dashboard includes:
+
+- Profile readiness.
+- Saved jobs.
+- Application count.
+- Interview count.
+- Application tracker with statuses.
+
+This shows how the platform can help students, freshers, and employees manage their career search after applying.
+
+### 8. Recruiter Dashboard
+
+The recruiter dashboard includes:
+
+- Open roles.
+- Applicant count.
+- Shortlisted candidates.
+- Offer-stage candidates.
+- Hiring pipeline cards.
+
+This shows how the platform can support recruiters who need to find suitable resources for current openings.
+
+### 9. API Layer
 
 The app includes API routes for:
 
@@ -74,7 +112,7 @@ The app includes API routes for:
 
 MongoDB data is serialized into plain JSON so client components receive stable string IDs.
 
-### 7. CI/CD Pipeline
+### 10. CI/CD Pipeline
 
 GitHub Actions validates and deploys the project:
 
@@ -88,11 +126,13 @@ GitHub Actions validates and deploys the project:
 ## Future Improvements
 
 - Store submitted applications in MongoDB.
-- Add recruiter authentication.
+- Add real authentication with candidate/recruiter roles.
 - Add admin moderation for posted jobs.
 - Add pagination for larger job volumes.
 - Add tests for API validation and filtering behavior.
 - Add company logos and job type fields.
+- Add recruiter applicant review actions.
+- Add AI-based job matching and candidate ranking.
 
 ## AI Usage Summary
 
