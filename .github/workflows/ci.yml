@@ -1,8 +1,9 @@
-name: CI Pipeline
+name: AI Job Board CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build:
@@ -12,7 +13,7 @@ jobs:
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -20,8 +21,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build project
+      - name: Build Project
         run: npm run build
