@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TalentBridge AI - Professional Job Board
 
-## Getting Started
+TalentBridge AI is a modern job board built with Next.js, MongoDB, GitHub Actions, and Vercel. It was created as an AI-assisted software engineering assessment project with a focus on production-minded UX, clean feature flows, and deployment readiness.
 
-First, run the development server:
+## Live Links
+
+- GitHub Repository: `https://github.com/Madhan-Puli/AI-JOB-BOARD`
+- Vercel Demo: add the production Vercel URL after deployment
+- AI-generated Documentation: see [`docs/AI_GENERATED_DOCUMENTATION.md`](docs/AI_GENERATED_DOCUMENTATION.md)
+
+## Key Features
+
+- Professional homepage with search, marketplace metrics, and featured role cards.
+- Jobs directory with keyword search and location filtering.
+- MongoDB-backed job data using Next.js App Router API routes.
+- Server-rendered job detail pages for stable role links.
+- Employer role publishing form with validation and salary normalization.
+- Candidate application flow with resume URL, contact details, and confirmation state.
+- Clear loading, empty, and error states for a more reliable user experience.
+- GitHub Actions CI/CD pipeline for build validation and Vercel deployment.
+
+## Tech Stack
+
+- Framework: Next.js 16 App Router
+- UI: React 19, Tailwind CSS 4, React Icons
+- Database: MongoDB Atlas
+- CI/CD: GitHub Actions
+- Deployment: Vercel
+
+## Local Setup
+
+1. Install dependencies:
+
+```bash
+npm install --legacy-peer-deps
+```
+
+2. Create `.env.local`:
+
+```bash
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/jobboard?retryWrites=true&w=majority
+```
+
+3. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## CI/CD Setup
 
-## Learn More
+The workflow at `.github/workflows/ci.yml` runs on pushes and pull requests to `main` and `madhan`.
 
-To learn more about Next.js, take a look at the following resources:
+Required GitHub repository secrets:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `MONGODB_URI`
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Pipeline stages:
 
-## Deploy on Vercel
+- Install dependencies with `npm ci`.
+- Build the Next.js application.
+- Pull Vercel project settings.
+- Build Vercel production output.
+- Deploy the prebuilt application to Vercel.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Assessment Checklist
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [x] Build a job board using AI-assisted development.
+- [x] Push code to GitHub.
+- [x] Add GitHub Actions CI/CD pipeline.
+- [x] Prepare Vercel deployment workflow.
+- [x] Write AI-generated feature documentation.
+- [ ] Add final deployed Vercel link after secrets are configured.
+
+## Notes
+
+The app requires a valid MongoDB Atlas URI. Atlas connection strings should start with `mongodb+srv://`. The MongoDB helper also normalizes the common `mongodb://...mongodb.net` mistake for safer local development.

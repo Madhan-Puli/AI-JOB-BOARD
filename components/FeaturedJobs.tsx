@@ -1,15 +1,30 @@
-export default function FeaturedJobs() {
-  return (
-    <section className="py-12 bg-gray-100">
-      <div className="max-w-7xl mx-auto px-6 text-center">
-        <h2 className="text-4xl font-bold text-black mb-4">
-          ⭐Featured Jobs
-        </h2>
+type FeaturedJobsProps = {
+  resultCount: number;
+  totalJobs: number;
+};
 
-        <p className="text-gray-600 text-lg mt-2">
-        Explore the latest job opportunities and find the perfect role for your career.
-      </p>
+export default function FeaturedJobs({
+  resultCount,
+  totalJobs,
+}: FeaturedJobsProps) {
+  return (
+    <section className="mx-auto flex max-w-7xl flex-col gap-3 px-5 pt-10 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+          Featured roles
+        </p>
+        <h2 className="mt-2 text-3xl font-bold text-slate-950">
+          Roles worth your attention
+        </h2>
+        <p className="mt-2 max-w-2xl text-slate-600">
+          A focused job board experience with clean role cards, quick scanning,
+          and direct application paths.
+        </p>
       </div>
+
+      <p className="text-sm font-semibold text-slate-500">
+        Showing {resultCount} of {totalJobs} roles
+      </p>
     </section>
   );
 }

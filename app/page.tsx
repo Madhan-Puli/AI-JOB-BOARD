@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import FeaturedJobs from "../components/FeaturedJobs";
@@ -22,7 +22,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // ✅ FETCH DATA FROM API
   useEffect(() => {
     async function fetchJobs() {
       try {
@@ -49,50 +48,74 @@ export default function Home() {
     fetchJobs();
   }, []);
 
-  // ✅ SAFE FILTER
-  const filteredJobs = jobs.filter((job) => {
-    if(!job) return false;
+  const filteredJobs = useMemo(() => {
+    const query = search.trim().toLowerCase();
 
-    return (
-      job?.title?.toLowerCase().includes(search.toLowerCase()) ||
-      job?.company?.toLowerCase().includes(search.toLowerCase()) ||
-      job?.location?.toLowerCase().includes(search.toLowerCase()) ||
-      job?.salary?.toLowerCase().includes(search.toLowerCase())
+    if (!query) {
+      return jobs;
+    }
+
+    return jobs.filter((job) =>
+      [job.title, job.company, job.location, job.salary, job.description]
+        .filter(Boolean)
+        .some((value) => value?.toLowerCase().includes(query))
     );
-  });
+  }, [jobs, search]);
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <main className="min-h-screen bg-slate-50">
       <Navbar />
-      <Hero search={search} setSearch={setSearch} />
-      <FeaturedJobs />
+      <Hero search={search} setSearch={setSearch} totalJobs={jobs.length} />
+      <FeaturedJobs resultCount={filteredJobs.length} totalJobs={jobs.length} />
 
-      {/* JOB LIST */}
-      <section className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+      <section className="mx-auto max-w-7xl px-5 py-8">
         {loading ? (
-          <p className="col-span-full text-center text-gray-600 text-lg">
-            Loading jobs...
-          </p>
+          <div className="rounded-lg border border-slate-200 bg-white p-8 text-center text-slate-600">
+            Loading curated roles...
+          </div>
         ) : error ? (
-          <p className="col-span-full text-center text-red-600 text-lg">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center font-medium text-red-700">
             {error}
-          </p>
+          </div>
         ) : filteredJobs.length > 0 ? (
-          filteredJobs.map((job) => (
-            <JobCard
-              key={job._id}
-              id={job._id}
-              title={job.title}
-              company={job.company}
-              location={job.location}
-              salary={job.salary}
-            />
-          ))
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {filteredJobs.slice(0, 6).map((job) => (
+              <JobCard
+                key={job._id}
+                id={job._id}
+                title={job.title}
+                company={job.company}
+                location={job.location}
+                salary={job.salary}
+                description={job.description}
+              />
+            ))}
+          </div>
         ) : (
-          <p className="col-span-full text-center text-gray-600 text-lg">
-            No jobs found
-          </p>
+          <div className="rounded-lg border border-slate-200 bg-white p-8 text-center">
+            <h3 className="text-lg font-bold text-slate-950">
+              No matching roles found
+            </h3>
+            <p className="mt-2 text-slate-600">
+              Try searching by company, location, or role title.
+            </p>
+          </div>
         )}
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 pb-12">
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            ["Fast discovery", "Search and scan jobs without noisy page reloads."],
+            ["Employer workflow", "Post new roles through a validated recruiter form."],
+            ["CI/CD ready", "GitHub Actions verifies builds and can deploy to Vercel."],
+          ].map(([title, copy]) => (
+            <div key={title} className="rounded-lg border border-slate-200 bg-white p-5">
+              <h3 className="font-bold text-slate-950">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{copy}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <Footer />

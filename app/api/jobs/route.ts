@@ -23,17 +23,32 @@ export async function POST(req: Request) {
     const db = client.db("jobboard");
 
     const body = await req.json();
+    const requiredFields = ["title", "company", "location", "salary", "description"];
 
-    const salary = body.salary.toString().includes("LPA")
-      ? body.salary
-      : `${body.salary} LPA`;
+    for (const field of requiredFields) {
+      if (!body[field] || !body[field].toString().trim()) {
+        return Response.json(
+          {
+            error: "Missing required field",
+            details: `${field} is required`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    const salaryInput = body.salary.toString().replace(/\s+/g, " ").trim();
+    const salary = salaryInput.toUpperCase().includes("LPA")
+      ? salaryInput
+      : `${salaryInput} LPA`;
 
     const result = await db.collection("jobs").insertOne({
-      title: body.title,
-      company: body.company,
-      location: body.location,
+      title: body.title.toString().trim(),
+      company: body.company.toString().trim(),
+      location: body.location.toString().trim(),
       salary,
-      description: body.description,
+      description: body.description.toString().trim(),
+      createdAt: new Date(),
     });
 
     return Response.json({
