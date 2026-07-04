@@ -16,9 +16,7 @@ export default function ApplyPage() {
     resume: "",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
@@ -70,7 +68,7 @@ export default function ApplyPage() {
               required
               value={form.name}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg text-black"
             />
           </div>
 
@@ -86,7 +84,7 @@ export default function ApplyPage() {
               required
               value={form.email}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg text-black"
             />
           </div>
 
@@ -102,7 +100,7 @@ export default function ApplyPage() {
               required
               value={form.phone}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg text-black"
             />
           </div>
 
@@ -118,7 +116,7 @@ export default function ApplyPage() {
               required
               value={form.resume}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg text-black"
             />
           </div>
 
@@ -127,14 +125,14 @@ export default function ApplyPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="w-1/2 bg-gray-300 hover:bg-gray-400 text-black font-semibold py-3 rounded-lg transition"
+              className="w-1/2 bg-gray-300 hover:bg-gray-400 text-black font-semibold py-3 rounded-lg"
             >
               Back
             </button>
 
             <button
               type="submit"
-              className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
+              className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg"
             >
               Submit Application
             </button>
