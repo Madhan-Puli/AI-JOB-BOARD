@@ -13,21 +13,33 @@ type Job = {
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/jobs")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setJobs(data);
-        } else {
-          setJobs([]);
+    async function fetchJobs() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const res = await fetch("/api/jobs");
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data?.details || data?.error || "Failed to fetch jobs");
         }
-      })
-      .catch((err) => {
-        console.error(err);
+
+        setJobs(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Failed to fetch jobs:", error);
         setJobs([]);
-      });
+        setError(error instanceof Error ? error.message : "Failed to fetch jobs");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchJobs();
   }, []);
 
   return (
@@ -37,7 +49,11 @@ export default function JobsPage() {
           All Jobs
         </h1>
 
-        {jobs.length === 0 ? (
+        {loading ? (
+          <p className="text-gray-600 text-lg">Loading jobs...</p>
+        ) : error ? (
+          <p className="text-red-600 text-lg">{error}</p>
+        ) : jobs.length === 0 ? (
           <p className="text-gray-600 text-lg">No jobs found</p>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

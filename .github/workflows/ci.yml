@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+      - madhan
+  pull_request:
+    branches:
+      - main
+      - madhan
 
 jobs:
   build:
@@ -22,7 +27,7 @@ jobs:
           node-version: 20
 
       - name: Install Dependencies
-        run: npm install --legacy-peer-deps
+        run: npm ci --legacy-peer-deps
 
       - name: Build Project
         run: npm run build

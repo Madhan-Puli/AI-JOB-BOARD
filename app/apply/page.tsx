@@ -1,9 +1,25 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 export default function ApplyPage() {
+  return (
+    <Suspense fallback={<ApplyPageFallback />}>
+      <ApplyForm />
+    </Suspense>
+  );
+}
+
+function ApplyPageFallback() {
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+      <p className="text-gray-600 text-lg">Loading application...</p>
+    </div>
+  );
+}
+
+function ApplyForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
 

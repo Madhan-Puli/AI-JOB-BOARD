@@ -1,16 +1,5 @@
 import Link from "next/link";
-
-async function getJob(id: string) {
-  const res = await fetch(`http://localhost:3000/api/jobs/${id}`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    return null;
-  }
-
-  return res.json();
-}
+import { getJobById } from "@/lib/jobs";
 
 export default async function JobDetailsPage({
   params,
@@ -19,7 +8,7 @@ export default async function JobDetailsPage({
 }) {
   const { id } = await params;
 
-  const job = await getJob(id);
+  const job = await getJobById(id);
 
   if (!job) {
     return (

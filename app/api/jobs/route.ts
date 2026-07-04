@@ -1,13 +1,10 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
+import { getJobs } from "@/lib/jobs";
 
 export async function GET() {
   try {
-    const client = await clientPromise;
-    const db = client.db("jobboard");
-
-    const jobs = await db.collection("jobs").find({}).toArray();
-
+    const jobs = await getJobs();
     return NextResponse.json(jobs);
   } catch (error) {
     return NextResponse.json(

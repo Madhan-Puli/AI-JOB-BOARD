@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { getJobById } from "@/lib/jobs";
 
 export async function GET(
   request: Request,
@@ -8,17 +7,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-
-    console.log("Received ID:", id);
-
-    const client = await clientPromise;
-    const db = client.db("jobboard");
-
-    const job = await db.collection("jobs").findOne({
-      _id: new ObjectId(id),
-    });
-
-    console.log("Job Found:", job);
+    const job = await getJobById(id);
 
     return NextResponse.json(job);
   } catch (error) {

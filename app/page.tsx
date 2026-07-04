@@ -19,20 +19,30 @@ type Job = {
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   // ✅ FETCH DATA FROM API
   useEffect(() => {
     async function fetchJobs() {
       try {
+        setLoading(true);
+        setError("");
+
         const res = await fetch("/api/jobs");
         const data = await res.json();
 
-        console.log("API RESPONSE:", data);
+        if (!res.ok) {
+          throw new Error(data?.details || data?.error || "Failed to fetch jobs");
+        }
 
         setJobs(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Failed to fetch jobs:", error);
         setJobs([]);
+        setError(error instanceof Error ? error.message : "Failed to fetch jobs");
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -59,7 +69,15 @@ export default function Home() {
 
       {/* JOB LIST */}
       <section className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
-        {filteredJobs.length > 0 ? (
+        {loading ? (
+          <p className="col-span-full text-center text-gray-600 text-lg">
+            Loading jobs...
+          </p>
+        ) : error ? (
+          <p className="col-span-full text-center text-red-600 text-lg">
+            {error}
+          </p>
+        ) : filteredJobs.length > 0 ? (
           filteredJobs.map((job) => (
             <JobCard
               key={job._id}
