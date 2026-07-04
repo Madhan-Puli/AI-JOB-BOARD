@@ -1,13 +1,30 @@
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
+const rawUri = process.env.MONGODB_URI;
 
-if (!uri || !uri.startsWith("mongodb")) {
+if (!rawUri || !rawUri.startsWith("mongodb")) {
   throw new Error("Invalid or missing MONGODB_URI");
 }
 
-const client = new MongoClient(uri);
+const uri = rawUri.replace(
+  /^mongodb:\/\/(.+@cluster[^/?]+\.mongodb\.net)/,
+  "mongodb+srv://$1"
+);
 
-const clientPromise = client.connect();
+let clientPromise: Promise<MongoClient>;
+
+declare global {
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
+}
+
+if (process.env.NODE_ENV === "development") {
+  if (!global._mongoClientPromise) {
+    global._mongoClientPromise = new MongoClient(uri).connect();
+  }
+
+  clientPromise = global._mongoClientPromise;
+} else {
+  clientPromise = new MongoClient(uri).connect();
+}
 
 export default clientPromise;
