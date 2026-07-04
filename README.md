@@ -5,7 +5,7 @@ TalentBridge AI is a modern two-sided hiring marketplace built with Next.js, Mon
 ## Live Links
 
 - GitHub Repository: `https://github.com/Madhan-Puli/AI-JOB-BOARD`
-- Vercel Demo: add the production Vercel URL after deployment
+- Vercel Demo: `https://ai-job-board-tan.vercel.app`
 - AI-generated Documentation: see [`docs/AI_GENERATED_DOCUMENTATION.md`](docs/AI_GENERATED_DOCUMENTATION.md)
 
 ## Key Features
@@ -108,7 +108,7 @@ Pipeline stages:
 - [x] Add GitHub Actions CI/CD pipeline.
 - [x] Prepare Vercel deployment workflow.
 - [x] Write AI-generated feature documentation.
-- [ ] Add final deployed Vercel link after secrets are configured.
+- [x] Add final deployed Vercel link.
 
 ## Notes
 
