@@ -37,10 +37,10 @@ const credentials = {
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_34%),linear-gradient(135deg,#f8fafc_0%,#eef2ff_48%,#f0fdf4_100%)]">
+    <main className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_34%),linear-gradient(135deg,#f8fafc_0%,#eef2ff_48%,#f0fdf4_100%)]">
       <Navbar />
 
-      <section className="mx-auto max-w-7xl px-5 py-12">
+      <section className="mx-auto w-full max-w-7xl flex-1 px-5 py-12">
         <div className="mx-auto max-w-3xl text-center">
           <p className="inline-flex items-center gap-2 rounded-md border border-blue-100 bg-white/80 px-3 py-1 text-sm font-bold uppercase tracking-wide text-blue-700 shadow-sm">
             <FiShield aria-hidden="true" className="h-4 w-4" />

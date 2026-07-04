@@ -11,6 +11,8 @@ import {
   FiBriefcase,
   FiCheckCircle,
   FiClock,
+  FiChevronDown,
+  FiEdit3,
   FiFileText,
   FiLogOut,
   FiUserCheck,
@@ -25,6 +27,8 @@ type Session = {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [session] = useState<Session | null>(() => {
     if (typeof window === "undefined") {
       return null;
@@ -55,9 +59,9 @@ export default function DashboardPage() {
 
   if (!session) {
     return (
-      <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_36%),linear-gradient(135deg,#f8fafc,#eef2ff)]">
+      <main className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_36%),linear-gradient(135deg,#f8fafc,#eef2ff)]">
         <Navbar />
-        <section className="mx-auto max-w-2xl px-5 py-20 text-center">
+        <section className="mx-auto flex w-full max-w-2xl flex-1 items-center px-5 py-20 text-center">
           <div className="rounded-lg border border-white/70 bg-white p-8 shadow-xl">
             <h1 className="text-3xl font-bold text-slate-950">
               Login required
@@ -88,19 +92,58 @@ export default function DashboardPage() {
 
       <section className="border-b border-white/70 bg-white/80 backdrop-blur">
         <div className="mx-auto max-w-7xl px-5 py-10">
-          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="rounded-md bg-blue-50 px-3 py-1 text-sm font-bold uppercase tracking-wide text-blue-700">
-              Signed in as {session.username}
-            </p>
-            <button
-              type="button"
-              onClick={logout}
-              className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-100"
-            >
-              <FiLogOut aria-hidden="true" className="h-4 w-4" />
-              Logout
-            </button>
+          <div className="mb-6 flex justify-end">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setMenuOpen((current) => !current)}
+                className="inline-flex items-center gap-3 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50"
+              >
+                <span className="grid h-8 w-8 place-items-center rounded-md bg-blue-600 text-white">
+                  {session.username.charAt(0)}
+                </span>
+                <span className="text-left">
+                  <span className="block leading-4">{session.username}</span>
+                  <span className="text-xs font-semibold capitalize text-slate-500">
+                    {session.role}
+                  </span>
+                </span>
+                <FiChevronDown aria-hidden="true" className="h-4 w-4" />
+              </button>
+
+              {menuOpen ? (
+                <div className="absolute right-0 z-30 mt-2 w-56 rounded-lg border border-slate-200 bg-white p-2 shadow-xl">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProfileOpen(true);
+                      setMenuOpen(false);
+                    }}
+                    className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-bold text-slate-700 hover:bg-slate-100"
+                  >
+                    <FiEdit3 aria-hidden="true" className="h-4 w-4" />
+                    Update profile
+                  </button>
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-bold text-red-600 hover:bg-red-50"
+                  >
+                    <FiLogOut aria-hidden="true" className="h-4 w-4" />
+                    Logout
+                  </button>
+                </div>
+              ) : null}
+            </div>
           </div>
+
+          {profileOpen ? (
+            <ProfilePanel
+              isRecruiter={isRecruiter}
+              username={session.username}
+              onClose={() => setProfileOpen(false)}
+            />
+          ) : null}
 
           <div className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-end">
             <div>
@@ -207,6 +250,123 @@ export default function DashboardPage() {
 
       <Footer />
     </main>
+  );
+}
+
+function ProfilePanel({
+  isRecruiter,
+  username,
+  onClose,
+}: {
+  isRecruiter: boolean;
+  username: string;
+  onClose: () => void;
+}) {
+  const [saved, setSaved] = useState(false);
+  const [profile, setProfile] = useState({
+    name: username,
+    email: isRecruiter ? "recruiter@talentbridge.ai" : "student@talentbridge.ai",
+    headline: isRecruiter
+      ? "Technical recruiter hiring for product engineering roles"
+      : "Early-career software engineer open to frontend and full stack roles",
+  });
+
+  function updateProfile(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    setSaved(false);
+    setProfile({
+      ...profile,
+      [event.target.name]: event.target.value,
+    });
+  }
+
+  function saveProfile(event: React.FormEvent) {
+    event.preventDefault();
+    setSaved(true);
+  }
+
+  return (
+    <form
+      onSubmit={saveProfile}
+      className="mb-8 rounded-lg border border-blue-100 bg-white p-5 shadow-lg"
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-sm font-bold uppercase tracking-wide text-blue-700">
+            Update profile
+          </p>
+          <h2 className="mt-1 text-2xl font-bold text-slate-950">
+            {isRecruiter ? "Recruiter profile" : "Candidate profile"}
+          </h2>
+          <p className="mt-2 text-sm text-slate-600">
+            Keep this profile updated so the dashboard feels personalized for
+            the signed-in role.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="rounded-md border border-slate-200 px-3 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100"
+        >
+          Close
+        </button>
+      </div>
+
+      <div className="mt-5 grid gap-4 md:grid-cols-2">
+        <label className="block">
+          <span className="text-sm font-bold text-slate-700">Name</span>
+          <input
+            name="name"
+            value={profile.name}
+            onChange={updateProfile}
+            className="mt-2 w-full rounded-md border border-slate-300 bg-white p-3 text-slate-950"
+          />
+        </label>
+
+        <label className="block">
+          <span className="text-sm font-bold text-slate-700">Email</span>
+          <input
+            name="email"
+            type="email"
+            value={profile.email}
+            onChange={updateProfile}
+            className="mt-2 w-full rounded-md border border-slate-300 bg-white p-3 text-slate-950"
+          />
+        </label>
+      </div>
+
+      <label className="mt-4 block">
+        <span className="text-sm font-bold text-slate-700">
+          {isRecruiter ? "Hiring focus" : "Career headline"}
+        </span>
+        <textarea
+          name="headline"
+          value={profile.headline}
+          onChange={updateProfile}
+          rows={3}
+          className="mt-2 w-full rounded-md border border-slate-300 bg-white p-3 text-slate-950"
+        />
+      </label>
+
+      <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        {saved ? (
+          <p className="text-sm font-bold text-emerald-700">
+            Profile updated for this session.
+          </p>
+        ) : (
+          <p className="text-sm text-slate-500">
+            Demo update is saved visually for this active session.
+          </p>
+        )}
+        <button
+          type="submit"
+          className="rounded-md bg-blue-600 px-5 py-3 font-bold text-white hover:bg-blue-700"
+        >
+          Save profile
+        </button>
+      </div>
+    </form>
   );
 }
 
