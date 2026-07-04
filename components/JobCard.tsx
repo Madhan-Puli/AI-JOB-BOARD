@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 type Props = {
-  id: number;
+  id: string;
   title: string;
   company: string;
   location: string;
@@ -16,31 +16,37 @@ export default function JobCard({
   salary,
 }: Props) {
   return (
-    <div className="bg-white p-5 rounded-xl shadow-md hover:shadow-xl transition duration-300 border border-gray-200 flex flex-col h-full">
+    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200 p-6 flex flex-col h-full">
 
-      {/* TOP CONTENT */}
       <div className="flex-1">
-        <h3 className="text-xl font-bold text-gray-900">
+
+        <h2 className="text-2xl font-bold text-black mb-2">
           {title}
-        </h3>
+        </h2>
 
-        <p className="text-gray-700 mt-1">
-          <span className="font-semibold">Company:</span> {company}
+        <p className="text-gray-700 mb-2">
+          <span className="font-semibold text-black">
+            Company:
+          </span>{" "}
+          {company}
         </p>
 
-        <p className="text-gray-600">
-          <span className="font-semibold">Location:</span> {location}
+        <p className="text-gray-700 mb-3">
+          <span className="font-semibold text-black">
+            Location:
+          </span>{" "}
+          {location}
         </p>
 
-        <p className="text-green-600 font-semibold mt-2">
+        <p className="text-green-600 text-xl font-bold">
           ₹{salary}
         </p>
+
       </div>
 
-      {/* BUTTON FIXED AT BOTTOM */}
       <Link
         href={`/jobs/${id}`}
-        className="mt-4 w-full text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold"
+        className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg font-semibold transition"
       >
         View Details
       </Link>

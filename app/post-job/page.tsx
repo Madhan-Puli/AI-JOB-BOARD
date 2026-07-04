@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function PostJob() {
+export default function PostJobPage() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
     title: "",
     company: "",
@@ -11,11 +14,24 @@ export default function PostJob() {
     description: "",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
-      const response = await fetch("/api/jobs", {
+      const res = await fetch("/api/jobs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,117 +39,148 @@ export default function PostJob() {
         body: JSON.stringify(form),
       });
 
-      if (response.ok) {
-        alert("Job Posted Successfully!");
+      const data = await res.json();
 
-        setForm({
-          title: "",
-          company: "",
-          location: "",
-          salary: "",
-          description: "",
-        });
-      } else {
-        alert("Failed to Post Job");
-      }
+      console.log("status:", res.status);
+      console.log("Response:", data);
+
+      if (!res.ok) {
+        console.log("POST ERROR:", data);
+
+        alert(
+          `${data.error}\n\n${data.details ?? "No additional details"}`
+      );
+
+    setLoading(false);
+    return;
+  }
+
+      alert("Job Posted Successfully!");
+
+      router.push("/");
+
+      router.refresh();
     } catch (error) {
       console.error(error);
-      alert("Server Error");
+      alert("Failed to Post Job");
     }
-  };
+
+    setLoading(false);
+  }
 
   return (
-    <main className="min-h-screen bg-gray-100 flex justify-center items-center p-8">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-xl border border-gray-200 rounded-xl p-8 w-full max-w-xl"
-      >
-        <h1 className="text-3xl font-bold text-center text-blue-600 mb-8">
-          Post a Job
+    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-8">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-8">
+
+        <h1 className="text-3xl font-bold text-center text-black mb-8">
+          Post a New Job
         </h1>
 
-        <label className="block mb-2 font-semibold text-gray-800">
-          Job Title
-        </label>
+        <form onSubmit={handleSubmit} className="space-y-5">
 
-        <input
-          type="text"
-          placeholder="Enter Job Title"
-          value={form.title}
-          onChange={(e) =>
-            setForm({ ...form, title: e.target.value })
-          }
-          className="w-full border border-gray-400 rounded-lg p-3 mb-5 text-black placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+          <div>
+            <label className="block font-semibold mb-2 text-black">
+              Job Title
+            </label>
 
-        <label className="block mb-2 font-semibold text-gray-800">
-          Company Name
-        </label>
+            <input
+              type="text"
+              name="title"
+              value={form.title}
+              onChange={handleChange}
+              required
+              placeholder="Frontend Developer"
+              className="w-full border border-gray-300 rounded-lg p-3 text-black"
+            />
+          </div>
 
-        <input
-          type="text"
-          placeholder="Enter Company Name"
-          value={form.company}
-          onChange={(e) =>
-            setForm({ ...form, company: e.target.value })
-          }
-          className="w-full border border-gray-400 rounded-lg p-3 mb-5 text-black placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+          <div>
+            <label className="block font-semibold mb-2 text-black">
+              Company
+            </label>
 
-        <label className="block mb-2 font-semibold text-gray-800">
-          Location
-        </label>
+            <input
+              type="text"
+              name="company"
+              value={form.company}
+              onChange={handleChange}
+              required
+              placeholder="Google"
+              className="w-full border border-gray-300 rounded-lg p-3 text-black"
+            />
+          </div>
 
-        <input
-          type="text"
-          placeholder="Enter Job Location"
-          value={form.location}
-          onChange={(e) =>
-            setForm({ ...form, location: e.target.value })
-          }
-          className="w-full border border-gray-400 rounded-lg p-3 mb-5 text-black placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+          <div>
+            <label className="block font-semibold mb-2 text-black">
+              Location
+            </label>
 
-        <label className="block mb-2 font-semibold text-gray-800">
-          Salary
-        </label>
+            <input
+              type="text"
+              name="location"
+              value={form.location}
+              onChange={handleChange}
+              required
+              placeholder="Remote"
+              className="w-full border border-gray-300 rounded-lg p-3 text-black"
+            />
+          </div>
 
-        <input
-          type="text"
-          placeholder="Enter Salary (e.g. ₹8 LPA)"
-          value={form.salary}
-          onChange={(e) =>
-            setForm({ ...form, salary: e.target.value })
-          }
-          className="w-full border border-gray-400 rounded-lg p-3 mb-5 text-black placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+          <div>
+            <label className="block font-semibold mb-2 text-black">
+              Salary
+            </label>
 
-        <label className="block mb-2 font-semibold text-gray-800">
-          Job Description
-        </label>
+            <input
+              type="text"
+              name="salary"
+              value={form.salary}
+              onChange={handleChange}
+              required
+              placeholder="12 LPA"
+              className="w-full border border-gray-300 rounded-lg p-3 text-black"
+            />
+          </div>
 
-        <textarea
-          placeholder="Enter Job Description"
-          value={form.description}
-          onChange={(e) =>
-            setForm({ ...form, description: e.target.value })
-          }
-          rows={5}
-          className="w-full border border-gray-400 rounded-lg p-3 mb-6 text-black placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+          <div>
+            <label className="block font-semibold mb-2 text-black">
+              Job Description
+            </label>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
-        >
-          Post Job
-        </button>
-      </form>
-    </main>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              required
+              rows={5}
+              placeholder="Enter job description..."
+              className="w-full border border-gray-300 rounded-lg p-3 text-black"
+            />
+          </div>
+
+          <div className="flex gap-4">
+
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="w-1/2 bg-gray-300 hover:bg-gray-400 text-black py-3 rounded-lg font-semibold"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold"
+            >
+              {loading ? "Posting..." : "Post Job"}
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
   );
 }

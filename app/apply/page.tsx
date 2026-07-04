@@ -1,102 +1,149 @@
 "use client";
 
+import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ApplyPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const jobId = searchParams.get("id");
+
   const [form, setForm] = useState({
     name: "",
     email: "",
     phone: "",
+    resume: "",
   });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     alert("Application Submitted Successfully!");
 
-    setForm({
-      name: "",
-      email: "",
-      phone: "",
+    console.log({
+      jobId,
+      ...form,
     });
+
+    router.push("/");
   };
 
   return (
-    <main className="min-h-screen bg-gray-100 flex justify-center items-center p-8">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+      <div className="bg-white shadow-2xl rounded-2xl w-full max-w-lg p-8 border border-gray-200">
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-xl border border-gray-200 w-full max-w-xl"
-      >
-
-        <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">
+        <h1 className="text-3xl font-bold text-center text-black mb-2">
           Apply for Job
         </h1>
 
-        <label className="block mb-2 font-semibold text-gray-800">
-          Full Name
-        </label>
+        <p className="text-center text-gray-600 mb-6">
+          Complete the form below to apply.
+        </p>
 
-        <input
-          type="text"
-          placeholder="Enter your full name"
-          className="w-full border border-gray-400 p-3 rounded-lg mb-4 text-black placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={form.name}
-          onChange={(e) =>
-            setForm({ ...form, name: e.target.value })
-          }
-          required
-        />
+        <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p className="text-gray-800">
+            <span className="font-semibold">Job ID:</span> {jobId}
+          </p>
+        </div>
 
-        <label className="block mb-2 font-semibold text-gray-800">
-          Email Address
-        </label>
+        <form onSubmit={handleSubmit} className="space-y-5">
 
-        <input
-          type="email"
-          placeholder="Enter your email"
-          className="w-full border border-gray-400 p-3 rounded-lg mb-4 text-black placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={form.email}
-          onChange={(e) =>
-            setForm({ ...form, email: e.target.value })
-          }
-          required
-        />
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Full Name
+            </label>
 
-        <label className="block mb-2 font-semibold text-gray-800">
-          Phone Number
-        </label>
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter your full name"
+              required
+              value={form.name}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-        <input
-          type="tel"
-          placeholder="Enter your phone number"
-          className="w-full border border-gray-400 p-3 rounded-lg mb-4 text-black placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={form.phone}
-          onChange={(e) =>
-            setForm({ ...form, phone: e.target.value })
-          }
-          required
-        />
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Email Address
+            </label>
 
-        <label className="block mb-2 font-semibold text-gray-800">
-          Upload Resume
-        </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              required
+              value={form.email}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-        <input
-          type="file"
-          accept=".pdf,.doc,.docx"
-          className="w-full border border-gray-400 p-3 rounded-lg mb-6 text-black bg-white"
-        />
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Phone Number
+            </label>
 
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300"
-        >
-          Submit Application
-        </button>
+            <input
+              type="text"
+              name="phone"
+              placeholder="Enter your phone number"
+              required
+              value={form.phone}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-      </form>
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Resume Link
+            </label>
 
-    </main>
+            <input
+              type="url"
+              name="resume"
+              placeholder="Paste your Google Drive resume link"
+              required
+              value={form.resume}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div className="flex gap-4 pt-4">
+
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="w-1/2 bg-gray-300 hover:bg-gray-400 text-black font-semibold py-3 rounded-lg transition"
+            >
+              Back
+            </button>
+
+            <button
+              type="submit"
+              className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
+            >
+              Submit Application
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
   );
 }

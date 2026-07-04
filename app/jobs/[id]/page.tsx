@@ -1,21 +1,6 @@
 import Link from "next/link";
 
-type Job = {
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  salary: string;
-  description: string;
-};
-
-type Props = {
-  params: Promise<{
-    id: string;
-  }>;
-};
-
-async function getJob(id: string): Promise<Job | null> {
+async function getJob(id: string) {
   const res = await fetch(`http://localhost:3000/api/jobs/${id}`, {
     cache: "no-store",
   });
@@ -27,64 +12,78 @@ async function getJob(id: string): Promise<Job | null> {
   return res.json();
 }
 
-export default async function JobDetails({ params }: Props) {
+export default async function JobDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
 
   const job = await getJob(id);
 
   if (!job) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <h1 className="text-3xl font-bold text-red-600">
           Job Not Found
         </h1>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 flex justify-center items-center p-8">
-      <div className="bg-white p-8 rounded-xl shadow-xl border border-gray-200 w-full max-w-2xl">
-        <h1 className="text-4xl font-bold text-blue-600 mb-6">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
+      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-2xl">
+
+        <h1 className="text-3xl font-bold text-black mb-6">
           {job.title}
         </h1>
 
-        <p className="text-lg text-gray-700 mb-3">
-          <strong>Company:</strong> {job.company}
-        </p>
+        <div className="space-y-4">
 
-        <p className="text-lg text-gray-700 mb-3">
-          <strong>Location:</strong> {job.location}
-        </p>
+          <p className="text-lg text-gray-700">
+            <span className="font-semibold">Company:</span> {job.company}
+          </p>
 
-        <p className="text-lg font-bold text-green-600 mb-5">
-          Salary: {job.salary}
-        </p>
+          <p className="text-lg text-gray-700">
+            <span className="font-semibold">Location:</span> {job.location}
+          </p>
 
-        <h2 className="text-2xl font-bold text-gray-800 mb-3">
-          Job Description
-        </h2>
+          <p className="text-lg font-bold text-green-600">
+            <span className="font-semibold">Salary:</span> ₹{job.salary}
+          </p>
 
-        <p className="text-gray-700 leading-7">
-          {job.description}
-        </p>
+          <div>
+            <h2 className="text-xl font-semibold text-black mb-2">
+              <span className="font-semibold">Job Description:</span> 
+            </h2>
 
-        <div className="flex gap-4 mt-8">
+            <p className="text-gray-700 leading-7">
+              {job.description}
+            </p>
+          </div>
+
+        </div>
+
+        <div className="mt-8 flex justify-between">
+
           <Link
-            href="/apply"
-            className="flex-1 bg-blue-600 text-white text-center py-3 rounded-lg hover:bg-blue-700"
+            href="/"
+            className="bg-gray-300 hover:bg-gray-400 text-black px-6 py-3 rounded-lg font-semibold transition"
+          >
+            Back to Jobs
+          </Link>
+
+          <Link
+            href={`/apply?id=${job._id}`}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition"
           >
             Apply Now
           </Link>
 
-          <Link
-            href="/jobs"
-            className="flex-1 bg-gray-600 text-white text-center py-3 rounded-lg hover:bg-gray-700"
-          >
-            Back to Jobs
-          </Link>
         </div>
+
       </div>
-    </main>
+    </div>
   );
 }

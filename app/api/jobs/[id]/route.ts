@@ -1,23 +1,32 @@
 import { NextResponse } from "next/server";
-import db from "@/lib/db";
+import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
 export async function GET(
-  req: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
+  try {
+    const { id } = await params;
 
-  const [rows]: any = await db.query(
-    "SELECT * FROM jobs WHERE id = ?",
-    [id]
-  );
+    console.log("Received ID:", id);
 
-  if (rows.length === 0) {
+    const client = await clientPromise;
+    const db = client.db("jobboard");
+
+    const job = await db.collection("jobs").findOne({
+      _id: new ObjectId(id),
+    });
+
+    console.log("Job Found:", job);
+
+    return NextResponse.json(job);
+  } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
-      { message: "Job not found" },
-      { status: 404 }
+      { error: String(error) },
+      { status: 500 }
     );
   }
-
-  return NextResponse.json(rows[0]);
 }
